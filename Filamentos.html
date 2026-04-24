@@ -1,0 +1,1907 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Filamentos · Inventario de filamento 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+
+<!-- Data: loaded as a plain inline script so window.FILAMENT_DATA is available before JSX runs -->
+<script>
+// ===== Bambu Lab catalog — lookup by 5-digit code =====
+// Fuente: tiendas Bambu Lab US/EU + forum. Hex aproximados donde no hay valor oficial.
+window.BAMBU_CATALOG = {
+  // PLA Basic (10xxx)
+  "10100": { family:"PLA", line:"Basic", name:"Jade White",        color:"#FFFFFF", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10101": { family:"PLA", line:"Basic", name:"Black",             color:"#000000", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10102": { family:"PLA", line:"Basic", name:"Silver",            color:"#A6A9AA", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10103": { family:"PLA", line:"Basic", name:"Gray",              color:"#8E9089", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10104": { family:"PLA", line:"Basic", name:"Light Gray",        color:"#D1D3D5", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10200": { family:"PLA", line:"Basic", name:"Red",               color:"#C12E1F", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10201": { family:"PLA", line:"Basic", name:"Beige",             color:"#F7E6DE", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10202": { family:"PLA", line:"Basic", name:"Magenta",           color:"#EC008C", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10203": { family:"PLA", line:"Basic", name:"Pink",              color:"#F55A74", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10204": { family:"PLA", line:"Basic", name:"Hot Pink",          color:"#F55A9D", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10205": { family:"PLA", line:"Basic", name:"Maroon Red",        color:"#8B2A2A", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10300": { family:"PLA", line:"Basic", name:"Orange",            color:"#FF6A13", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10301": { family:"PLA", line:"Basic", name:"Pumpkin Orange",    color:"#FF9016", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10400": { family:"PLA", line:"Basic", name:"Yellow",            color:"#F4EE2A", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10401": { family:"PLA", line:"Basic", name:"Gold",              color:"#E4BD68", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10402": { family:"PLA", line:"Basic", name:"Sunflower Yellow",  color:"#FEC600", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10501": { family:"PLA", line:"Basic", name:"Bambu Green",       color:"#00AE42", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10502": { family:"PLA", line:"Basic", name:"Mistletoe Green",   color:"#3F8E43", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10503": { family:"PLA", line:"Basic", name:"Bright Green",      color:"#BECF00", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10601": { family:"PLA", line:"Basic", name:"Blue",              color:"#0A2989", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10602": { family:"PLA", line:"Basic", name:"Blue Grey",          color:"#5B6579", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10603": { family:"PLA", line:"Basic", name:"Cyan",              color:"#0086D6", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10604": { family:"PLA", line:"Basic", name:"Cobalt Blue",       color:"#0056B8", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10605": { family:"PLA", line:"Basic", name:"Turquoise",         color:"#00B1B7", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10700": { family:"PLA", line:"Basic", name:"Purple",            color:"#5E43B7", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10701": { family:"PLA", line:"Basic", name:"Indigo Purple",     color:"#482960", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10800": { family:"PLA", line:"Basic", name:"Brown",             color:"#9D432C", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10801": { family:"PLA", line:"Basic", name:"Bronze",            color:"#847D48", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "10802": { family:"PLA", line:"Basic", name:"Cocoa Brown",       color:"#6B490F", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+
+  // PLA Matte (11xxx)
+  "11100": { family:"PLA", line:"Matte", name:"Ivory White",       color:"#FFFFFF", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11101": { family:"PLA", line:"Matte", name:"Charcoal",          color:"#000000", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11102": { family:"PLA", line:"Matte", name:"Ash Gray",          color:"#9B9EA0", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11103": { family:"PLA", line:"Matte", name:"Bone White",        color:"#CBC6B8", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11104": { family:"PLA", line:"Matte", name:"Nardo Gray",        color:"#757575", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11200": { family:"PLA", line:"Matte", name:"Scarlet Red",       color:"#DE4343", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11201": { family:"PLA", line:"Matte", name:"Sakura Pink",       color:"#E8AFCF", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11202": { family:"PLA", line:"Matte", name:"Dark Red",          color:"#BB3D43", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11203": { family:"PLA", line:"Matte", name:"Plum",              color:"#950051", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11300": { family:"PLA", line:"Matte", name:"Mandarin Orange",   color:"#F99963", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11301": { family:"PLA", line:"Matte", name:"Caramel",           color:"#CE7E4D", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11400": { family:"PLA", line:"Matte", name:"Lemon Yellow",      color:"#F7D959", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11401": { family:"PLA", line:"Matte", name:"Desert Tan",        color:"#E8DBB7", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11500": { family:"PLA", line:"Matte", name:"Grass Green",       color:"#61C680", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11501": { family:"PLA", line:"Matte", name:"Dark Green",        color:"#68724D", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11600": { family:"PLA", line:"Matte", name:"Marine Blue",       color:"#0078BF", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11601": { family:"PLA", line:"Matte", name:"Ice Blue",          color:"#A3D8E1", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11602": { family:"PLA", line:"Matte", name:"Sky Blue",          color:"#56B7E6", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11603": { family:"PLA", line:"Matte", name:"Dark Blue",         color:"#042F5F", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11700": { family:"PLA", line:"Matte", name:"Lilac Purple",      color:"#AE96D4", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11800": { family:"PLA", line:"Matte", name:"Latte Brown",       color:"#D3B7A7", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11801": { family:"PLA", line:"Matte", name:"Dark Brown",        color:"#7D6556", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11802": { family:"PLA", line:"Matte", name:"Dark Chocolate",    color:"#4D3324", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  "11803": { family:"PLA", line:"Matte", name:"Terracotta",        color:"#B15533", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+
+  // PLA Silk+ (13xxx)
+  "13000": { family:"PLA", line:"Silk+", name:"White",             color:"#F7F3F0", tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  "13102": { family:"PLA", line:"Silk+", name:"Titan Gray",        color:"#5B5B5B", tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  "13200": { family:"PLA", line:"Silk+", name:"Candy Red",         color:"#D02727", tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  "13201": { family:"PLA", line:"Silk+", name:"Pink",              color:"#F08BB4", tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  "13202": { family:"PLA", line:"Silk+", name:"Rose Gold",         color:"#D99B88", tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  "13401": { family:"PLA", line:"Silk+", name:"Gold",              color:"#D4A94B", tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  "13402": { family:"PLA", line:"Silk+", name:"Champagne",         color:"#EFD8A7", tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  "13500": { family:"PLA", line:"Silk+", name:"Candy Green",       color:"#1B9A5A", tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  "13501": { family:"PLA", line:"Silk+", name:"Mint",              color:"#9ED1B7", tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  "13600": { family:"PLA", line:"Silk+", name:"Blue",              color:"#2F5FA8", tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  "13601": { family:"PLA", line:"Silk+", name:"Baby Blue",         color:"#A4C9E4", tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  "13700": { family:"PLA", line:"Silk+", name:"Purple",            color:"#7B4BA0", tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  "13102_s": { family:"PLA", line:"Silk+", name:"Silver",          color:"#C4C6CC", tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+
+  // PLA Lite (16xxx) — línea económica / A1 entry
+  "16100": { family:"PLA", line:"Lite", name:"Black",              color:"#000000", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "16200": { family:"PLA", line:"Lite", name:"Red",                color:"#C12E1F", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  "16601": { family:"PLA", line:"Lite", name:"Blue",               color:"#1E4FC0", tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+
+  // PLA Glow (15xxx)
+  "15500": { family:"PLA", line:"Glow",  name:"Glow Green",        color:"#B8D98A", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"glow" },
+  "15600": { family:"PLA", line:"Glow",  name:"Glow Blue",         color:"#A8C4D8", tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"glow" },
+
+  // PETG HF (33xxx)
+  "33100": { family:"PETG-HF", line:"High Flow", name:"White",     color:"#F3F3EE", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  "33101": { family:"PETG-HF", line:"High Flow", name:"Gray",      color:"#8E8E93", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  "33102": { family:"PETG-HF", line:"High Flow", name:"Black",     color:"#1A1A1C", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  "33103": { family:"PETG-HF", line:"High Flow", name:"Dark Gray", color:"#4A4A4E", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  "33200": { family:"PETG-HF", line:"High Flow", name:"Red",       color:"#C8353A", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  "33300": { family:"PETG-HF", line:"High Flow", name:"Orange",    color:"#E9632B", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  "33400": { family:"PETG-HF", line:"High Flow", name:"Yellow",    color:"#F1B824", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  "33401": { family:"PETG-HF", line:"High Flow", name:"Cream",     color:"#F5E6C8", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  "33500": { family:"PETG-HF", line:"High Flow", name:"Green",     color:"#2E9C54", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  "33501": { family:"PETG-HF", line:"High Flow", name:"Lime Green",color:"#A2C814", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  "33502": { family:"PETG-HF", line:"High Flow", name:"Forest Green",color:"#1F5C3D", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  "33600": { family:"PETG-HF", line:"High Flow", name:"Blue",      color:"#1E4FC0", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  "33601": { family:"PETG-HF", line:"High Flow", name:"Lake Blue", color:"#2487A8", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  "33801": { family:"PETG-HF", line:"High Flow", name:"Peanut Brown",color:"#8A6338", tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+
+  // PETG Translucent (31xxx)
+  "31000": { family:"PETG", line:"Translúcido", name:"Clear",      color:"#E8F0F0", tempNozzle:"230-260°C", tempBed:"70-80°C", weight:"1kg", finish:"translucent" },
+  "31200": { family:"PETG", line:"Translúcido", name:"Translucent Red",   color:"#D43848", tempNozzle:"230-260°C", tempBed:"70-80°C", weight:"1kg", finish:"translucent" },
+  "31300": { family:"PETG", line:"Translúcido", name:"Translucent Orange",color:"#E8823A", tempNozzle:"230-260°C", tempBed:"70-80°C", weight:"1kg", finish:"translucent" },
+  "31500": { family:"PETG", line:"Translúcido", name:"Translucent Green", color:"#3AB870", tempNozzle:"230-260°C", tempBed:"70-80°C", weight:"1kg", finish:"translucent" },
+  "31600": { family:"PETG", line:"Translúcido", name:"Translucent Blue",  color:"#3A8CD4", tempNozzle:"230-260°C", tempBed:"70-80°C", weight:"1kg", finish:"translucent" },
+  "31700": { family:"PETG", line:"Translúcido", name:"Translucent Purple",color:"#8A5FC4", tempNozzle:"230-260°C", tempBed:"70-80°C", weight:"1kg", finish:"translucent" },
+
+  // ABS (40xxx)
+  "40100": { family:"ABS", line:"Standard", name:"White",          color:"#F3F3EE", tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  "40101": { family:"ABS", line:"Standard", name:"Black",          color:"#1A1A1C", tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  "40103": { family:"ABS", line:"Standard", name:"Gray",           color:"#8E8E93", tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  "40200": { family:"ABS", line:"Standard", name:"Red",            color:"#C8353A", tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  "40600": { family:"ABS", line:"Standard", name:"Blue",           color:"#1E4FC0", tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+
+  // ASA (45xxx)
+  "45100": { family:"ASA", line:"Standard", name:"White",          color:"#F3F3EE", tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  "45101": { family:"ASA", line:"Standard", name:"Black",          color:"#1A1A1C", tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  "45103": { family:"ASA", line:"Standard", name:"Gray",           color:"#A0A0A3", tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  "45200": { family:"ASA", line:"Standard", name:"Brick Red",      color:"#A83F3A", tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+};
+
+window.FILAMENT_DATA = [
+  // PLA BASIC
+  { id:"pla-basic-white",        code:"10100", family:"PLA",        line:"Basic",       name:"Jade White",            color:"#FFFFFF", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-black",        code:"10101", family:"PLA",        line:"Basic",       name:"Black",                 color:"#000000", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-silver",       code:"10102", family:"PLA",        line:"Basic",       name:"Silver",                color:"#A6A9AA", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-gray",         code:"10103", family:"PLA",        line:"Basic",       name:"Gray",                  color:"#8E9089", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-light-gray",   code:"10104", family:"PLA",        line:"Basic",       name:"Light Gray",            color:"#D1D3D5", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-red",          code:"10200", family:"PLA",        line:"Basic",       name:"Red",                   color:"#C12E1F", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-beige",        code:"10201", family:"PLA",        line:"Basic",       name:"Beige",                 color:"#F7E6DE", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-magenta",      code:"10202", family:"PLA",        line:"Basic",       name:"Magenta",               color:"#EC008C", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-pink",         code:"10203", family:"PLA",        line:"Basic",       name:"Pink",                  color:"#F55A74", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-hot-pink",     code:"10204", family:"PLA",        line:"Basic",       name:"Hot Pink",              color:"#F55A9D", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-maroon",       code:"10205", family:"PLA",        line:"Basic",       name:"Maroon Red",            color:"#8B2A2A", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-orange",       code:"10300", family:"PLA",        line:"Basic",       name:"Orange",                color:"#FF6A13", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-pumpkin",      code:"10301", family:"PLA",        line:"Basic",       name:"Pumpkin Orange",        color:"#FF9016", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-yellow",       code:"10400", family:"PLA",        line:"Basic",       name:"Yellow",                color:"#F4EE2A", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-gold",         code:"10401", family:"PLA",        line:"Basic",       name:"Gold",                  color:"#E4BD68", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-sunflower",    code:"10402", family:"PLA",        line:"Basic",       name:"Sunflower Yellow",      color:"#FEC600", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-bambu-green",  code:"10501", family:"PLA",        line:"Basic",       name:"Bambu Green",           color:"#00AE42", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-mistletoe",    code:"10502", family:"PLA",        line:"Basic",       name:"Mistletoe Green",       color:"#3F8E43", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-bright-green", code:"10503", family:"PLA",        line:"Basic",       name:"Bright Green",          color:"#BECF00", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-blue",         code:"10601", family:"PLA",        line:"Basic",       name:"Blue",                  color:"#0A2989", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-blue-grey",    code:"10602", family:"PLA",        line:"Basic",       name:"Blue Grey",             color:"#5B6579", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-cyan",         code:"10603", family:"PLA",        line:"Basic",       name:"Cyan",                  color:"#0086D6", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-cobalt",       code:"10604", family:"PLA",        line:"Basic",       name:"Cobalt Blue",           color:"#0056B8", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-turquoise",    code:"10605", family:"PLA",        line:"Basic",       name:"Turquoise",             color:"#00B1B7", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-purple",       code:"10700", family:"PLA",        line:"Basic",       name:"Purple",                color:"#5E43B7", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-indigo",       code:"10701", family:"PLA",        line:"Basic",       name:"Indigo Purple",         color:"#482960", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-brown",        code:"10800", family:"PLA",        line:"Basic",       name:"Brown",                 color:"#9D432C", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-bronze",       code:"10801", family:"PLA",        line:"Basic",       name:"Bronze",                color:"#847D48", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-basic-cocoa",        code:"10802", family:"PLA",        line:"Basic",       name:"Cocoa Brown",           color:"#6B490F", priceCLP:16990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  // PLA MATTE
+  { id:"pla-matte-ivory",        code:"11100", family:"PLA",        line:"Matte",       name:"Ivory White",           color:"#FFFFFF", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-charcoal",     code:"11101", family:"PLA",        line:"Matte",       name:"Charcoal",              color:"#000000", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-ash-gray",     code:"11102", family:"PLA",        line:"Matte",       name:"Ash Gray",              color:"#9B9EA0", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-bone",         code:"11103", family:"PLA",        line:"Matte",       name:"Bone White",            color:"#CBC6B8", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-nardo",        code:"11104", family:"PLA",        line:"Matte",       name:"Nardo Gray",            color:"#757575", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-scarlet",      code:"11200", family:"PLA",        line:"Matte",       name:"Scarlet Red",           color:"#DE4343", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-sakura",       code:"11201", family:"PLA",        line:"Matte",       name:"Sakura Pink",           color:"#E8AFCF", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-dark-red",     code:"11202", family:"PLA",        line:"Matte",       name:"Dark Red",              color:"#BB3D43", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-plum",         code:"11203", family:"PLA",        line:"Matte",       name:"Plum",                  color:"#950051", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-mandarin",     code:"11300", family:"PLA",        line:"Matte",       name:"Mandarin Orange",       color:"#F99963", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-caramel",      code:"11301", family:"PLA",        line:"Matte",       name:"Caramel",               color:"#CE7E4D", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-lemon",        code:"11400", family:"PLA",        line:"Matte",       name:"Lemon Yellow",          color:"#F7D959", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-desert-tan",   code:"11401", family:"PLA",        line:"Matte",       name:"Desert Tan",            color:"#E8DBB7", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-grass",        code:"11500", family:"PLA",        line:"Matte",       name:"Grass Green",           color:"#61C680", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-dark-green",   code:"11501", family:"PLA",        line:"Matte",       name:"Dark Green",            color:"#68724D", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-marine",       code:"11600", family:"PLA",        line:"Matte",       name:"Marine Blue",           color:"#0078BF", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-ice-blue",     code:"11601", family:"PLA",        line:"Matte",       name:"Ice Blue",              color:"#A3D8E1", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-sky",          code:"11602", family:"PLA",        line:"Matte",       name:"Sky Blue",              color:"#56B7E6", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-dark-blue",    code:"11603", family:"PLA",        line:"Matte",       name:"Dark Blue",             color:"#042F5F", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-lilac",        code:"11700", family:"PLA",        line:"Matte",       name:"Lilac Purple",          color:"#AE96D4", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-latte",        code:"11800", family:"PLA",        line:"Matte",       name:"Latte Brown",           color:"#D3B7A7", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-dark-brown",   code:"11801", family:"PLA",        line:"Matte",       name:"Dark Brown",            color:"#7D6556", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-chocolate",    code:"11802", family:"PLA",        line:"Matte",       name:"Dark Chocolate",        color:"#4D3324", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  { id:"pla-matte-terracotta",   code:"11803", family:"PLA",        line:"Matte",       name:"Terracotta",            color:"#B15533", priceCLP:16990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"matte" },
+  // PLA SILK+
+  { id:"pla-silk-white",         code:"13000", family:"PLA",        line:"Silk+",       name:"White",                 color:"#F7F3F0", priceCLP:24990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  { id:"pla-silk-titan-gray",    code:"13102", family:"PLA",        line:"Silk+",       name:"Titan Gray",            color:"#5B5B5B", priceCLP:24990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  { id:"pla-silk-candy-red",     code:"13200", family:"PLA",        line:"Silk+",       name:"Candy Red",             color:"#D02727", priceCLP:24990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  { id:"pla-silk-pink",          code:"13201", family:"PLA",        line:"Silk+",       name:"Pink",                  color:"#F08BB4", priceCLP:24990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  { id:"pla-silk-rose-gold",     code:"13202", family:"PLA",        line:"Silk+",       name:"Rose Gold",             color:"#D99B88", priceCLP:24990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  { id:"pla-silk-gold",          code:"13401", family:"PLA",        line:"Silk+",       name:"Gold",                  color:"#D4A94B", priceCLP:24990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  { id:"pla-silk-champagne",     code:"13402", family:"PLA",        line:"Silk+",       name:"Champagne",             color:"#EFD8A7", priceCLP:24990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  { id:"pla-silk-candy-green",   code:"13500", family:"PLA",        line:"Silk+",       name:"Candy Green",           color:"#1B9A5A", priceCLP:24990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  { id:"pla-silk-mint",          code:"13501", family:"PLA",        line:"Silk+",       name:"Mint",                  color:"#9ED1B7", priceCLP:24990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  { id:"pla-silk-blue",          code:"13600", family:"PLA",        line:"Silk+",       name:"Blue",                  color:"#2F5FA8", priceCLP:24990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  { id:"pla-silk-baby-blue",     code:"13601", family:"PLA",        line:"Silk+",       name:"Baby Blue",             color:"#A4C9E4", priceCLP:24990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  { id:"pla-silk-purple",        code:"13700", family:"PLA",        line:"Silk+",       name:"Purple",                color:"#7B4BA0", priceCLP:24990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  // PLA SILK DUAL
+  { id:"pla-silk-dual-sunset",   family:"PLA",        line:"Silk Dual",   name:"Atardecer (Rojo/Oro)",  color:"#C8353A", color2:"#D4A94B", priceCLP:27990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"dual" },
+  { id:"pla-silk-dual-ocean",    family:"PLA",        line:"Silk Dual",   name:"Océano (Azul/Verde)",   color:"#1E4FC0", color2:"#2F8F6B", priceCLP:27990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"dual" },
+  { id:"pla-silk-dual-neon",     family:"PLA",        line:"Silk Dual",   name:"Neón (Rosa/Púrpura)",   color:"#E24A86", color2:"#6A3FB0", priceCLP:27990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"dual" },
+  // PLA LITE (línea económica)
+  { id:"pla-lite-black",         code:"16100", family:"PLA",        line:"Lite",        name:"Black",                 color:"#000000", priceCLP:12990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-lite-red",           code:"16200", family:"PLA",        line:"Lite",        name:"Red",                   color:"#C12E1F", priceCLP:12990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  { id:"pla-lite-blue",          code:"16601", family:"PLA",        line:"Lite",        name:"Blue",                  color:"#1E4FC0", priceCLP:12990, tempNozzle:"190-220°C", tempBed:"35-55°C", weight:"1kg" },
+  // PLA GALAXY
+  { id:"pla-galaxy-black",       family:"PLA",        line:"Galaxy",      name:"Galaxy Black",          color:"#151528", priceCLP:26990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"sparkle" },
+  { id:"pla-galaxy-purple",      family:"PLA",        line:"Galaxy",      name:"Galaxy Purple",         color:"#2E1A4A", priceCLP:26990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"sparkle" },
+  { id:"pla-galaxy-green",       family:"PLA",        line:"Galaxy",      name:"Galaxy Green",          color:"#143828", priceCLP:26990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"sparkle" },
+  { id:"pla-galaxy-brown",       family:"PLA",        line:"Galaxy",      name:"Galaxy Brown",          color:"#3A2418", priceCLP:26990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"sparkle" },
+  // PLA MARBLE
+  { id:"pla-marble-white",       family:"PLA",        line:"Marble",      name:"Mármol Blanco",         color:"#E8E4DC", color2:"#7A7A78", priceCLP:24990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"marble" },
+  { id:"pla-marble-stone",       family:"PLA",        line:"Marble",      name:"Piedra Arenisca",       color:"#C2A97B", color2:"#6B5A40", priceCLP:24990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"marble" },
+  { id:"pla-marble-granite",     family:"PLA",        line:"Marble",      name:"Granito",               color:"#5A5A5C", color2:"#2B2B2E", priceCLP:24990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"marble" },
+  // PLA METAL
+  { id:"pla-metal-iron-gray",    family:"PLA",        line:"Metal",       name:"Gris Hierro",           color:"#5F6368", priceCLP:28990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  { id:"pla-metal-bronze",       family:"PLA",        line:"Metal",       name:"Bronce",                color:"#8A6338", priceCLP:28990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  { id:"pla-metal-oxide-green",  family:"PLA",        line:"Metal",       name:"Verde Óxido",           color:"#4A7A6B", priceCLP:28990, tempNozzle:"210-230°C", tempBed:"45-65°C", weight:"1kg", finish:"metallic" },
+  // PLA GLOW
+  { id:"pla-glow-green",         code:"15500", family:"PLA",        line:"Glow",        name:"Glow Green",            color:"#B8D98A", priceCLP:29990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"glow" },
+  { id:"pla-glow-blue",          code:"15600", family:"PLA",        line:"Glow",        name:"Glow Blue",             color:"#A8C4D8", priceCLP:29990, tempNozzle:"200-230°C", tempBed:"35-55°C", weight:"1kg", finish:"glow" },
+  // PLA-CF
+  { id:"pla-cf-black",           family:"PLA-CF",     line:"Carbon Fiber",name:"Negro Fibra de Carbono",color:"#1E1E20", priceCLP:39990, tempNozzle:"210-240°C", tempBed:"45-65°C", weight:"1kg", finish:"matte" },
+  { id:"pla-cf-gray",            family:"PLA-CF",     line:"Carbon Fiber",name:"Gris Fibra de Carbono", color:"#4A4A4E", priceCLP:39990, tempNozzle:"210-240°C", tempBed:"45-65°C", weight:"1kg", finish:"matte" },
+  // PETG Translúcido
+  { id:"petg-trans-clear",       code:"31000", family:"PETG",       line:"Translúcido", name:"Translucent Clear",     color:"#E8F0F0", priceCLP:16990, tempNozzle:"230-260°C", tempBed:"70-80°C", weight:"1kg", finish:"translucent" },
+  { id:"petg-trans-red",         code:"31200", family:"PETG",       line:"Translúcido", name:"Translucent Red",       color:"#D43848", priceCLP:16990, tempNozzle:"230-260°C", tempBed:"70-80°C", weight:"1kg", finish:"translucent" },
+  { id:"petg-trans-orange",      code:"31300", family:"PETG",       line:"Translúcido", name:"Translucent Orange",    color:"#E8823A", priceCLP:16990, tempNozzle:"230-260°C", tempBed:"70-80°C", weight:"1kg", finish:"translucent" },
+  { id:"petg-trans-green",       code:"31500", family:"PETG",       line:"Translúcido", name:"Translucent Green",     color:"#3AB870", priceCLP:16990, tempNozzle:"230-260°C", tempBed:"70-80°C", weight:"1kg", finish:"translucent" },
+  { id:"petg-trans-blue",        code:"31600", family:"PETG",       line:"Translúcido", name:"Translucent Blue",      color:"#3A8CD4", priceCLP:16990, tempNozzle:"230-260°C", tempBed:"70-80°C", weight:"1kg", finish:"translucent" },
+  { id:"petg-trans-purple",      code:"31700", family:"PETG",       line:"Translúcido", name:"Translucent Purple",    color:"#8A5FC4", priceCLP:16990, tempNozzle:"230-260°C", tempBed:"70-80°C", weight:"1kg", finish:"translucent" },
+  // PETG-CF
+  { id:"petg-cf-black",          family:"PETG-CF",    line:"Carbon Fiber",name:"Negro CF",              color:"#1E1E20", priceCLP:44990, tempNozzle:"250-280°C", tempBed:"70-80°C", weight:"1kg", finish:"matte" },
+  { id:"petg-cf-titan-gray",     family:"PETG-CF",    line:"Carbon Fiber",name:"Gris Titanio",          color:"#555559", priceCLP:44990, tempNozzle:"250-280°C", tempBed:"70-80°C", weight:"1kg", finish:"matte" },
+  // PETG-HF
+  { id:"petg-hf-white",          code:"33100", family:"PETG-HF",    line:"High Flow",   name:"White",                 color:"#F3F3EE", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  { id:"petg-hf-gray",           code:"33101", family:"PETG-HF",    line:"High Flow",   name:"Gray",                  color:"#8E8E93", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  { id:"petg-hf-black",          code:"33102", family:"PETG-HF",    line:"High Flow",   name:"Black",                 color:"#1A1A1C", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  { id:"petg-hf-dark-gray",      code:"33103", family:"PETG-HF",    line:"High Flow",   name:"Dark Gray",             color:"#4A4A4E", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  { id:"petg-hf-red",            code:"33200", family:"PETG-HF",    line:"High Flow",   name:"Red",                   color:"#C8353A", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  { id:"petg-hf-orange",         code:"33300", family:"PETG-HF",    line:"High Flow",   name:"Orange",                color:"#E9632B", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  { id:"petg-hf-yellow",         code:"33400", family:"PETG-HF",    line:"High Flow",   name:"Yellow",                color:"#F1B824", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  { id:"petg-hf-cream",          code:"33401", family:"PETG-HF",    line:"High Flow",   name:"Cream",                 color:"#F5E6C8", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  { id:"petg-hf-green",          code:"33500", family:"PETG-HF",    line:"High Flow",   name:"Green",                 color:"#2E9C54", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  { id:"petg-hf-lime",           code:"33501", family:"PETG-HF",    line:"High Flow",   name:"Lime Green",            color:"#A2C814", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  { id:"petg-hf-forest",         code:"33502", family:"PETG-HF",    line:"High Flow",   name:"Forest Green",          color:"#1F5C3D", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  { id:"petg-hf-blue",           code:"33600", family:"PETG-HF",    line:"High Flow",   name:"Blue",                  color:"#1E4FC0", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  { id:"petg-hf-lake",           code:"33601", family:"PETG-HF",    line:"High Flow",   name:"Lake Blue",             color:"#2487A8", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  { id:"petg-hf-peanut",         code:"33801", family:"PETG-HF",    line:"High Flow",   name:"Peanut Brown",          color:"#8A6338", priceCLP:16990, tempNozzle:"240-270°C", tempBed:"70-80°C", weight:"1kg" },
+  // ABS
+  { id:"abs-white",              code:"40100", family:"ABS",        line:"Standard",    name:"White",                 color:"#F3F3EE", priceCLP:23990, tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  { id:"abs-black",              code:"40101", family:"ABS",        line:"Standard",    name:"Black",                 color:"#1A1A1C", priceCLP:23990, tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  { id:"abs-gray",               code:"40103", family:"ABS",        line:"Standard",    name:"Gray",                  color:"#8E8E93", priceCLP:23990, tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  { id:"abs-red",                code:"40200", family:"ABS",        line:"Standard",    name:"Red",                   color:"#C8353A", priceCLP:23990, tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  { id:"abs-blue",               code:"40600", family:"ABS",        line:"Standard",    name:"Blue",                  color:"#1E4FC0", priceCLP:23990, tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  // ASA
+  { id:"asa-white",              code:"45100", family:"ASA",        line:"Standard",    name:"White",                 color:"#F3F3EE", priceCLP:26990, tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  { id:"asa-black",              code:"45101", family:"ASA",        line:"Standard",    name:"Black",                 color:"#1A1A1C", priceCLP:26990, tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  { id:"asa-gray",               code:"45103", family:"ASA",        line:"Standard",    name:"Gray",                  color:"#A0A0A3", priceCLP:26990, tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  { id:"asa-brick-red",          code:"45200", family:"ASA",        line:"Standard",    name:"Brick Red",             color:"#A83F3A", priceCLP:26990, tempNozzle:"240-270°C", tempBed:"90-100°C", weight:"1kg" },
+  // ASA-CF
+  { id:"asa-cf-black",           family:"ASA-CF",     line:"Carbon Fiber",name:"Negro CF",              color:"#1E1E20", priceCLP:49990, tempNozzle:"260-290°C", tempBed:"90-100°C", weight:"1kg", finish:"matte" },
+  // TPU
+  { id:"tpu-95a-white",          family:"TPU",        line:"95A",         name:"Blanco",                color:"#F3F3EE", priceCLP:32990, tempNozzle:"220-240°C", tempBed:"30-60°C", weight:"1kg", finish:"flex" },
+  { id:"tpu-95a-black",          family:"TPU",        line:"95A",         name:"Negro",                 color:"#1A1A1C", priceCLP:32990, tempNozzle:"220-240°C", tempBed:"30-60°C", weight:"1kg", finish:"flex" },
+  { id:"tpu-95a-red",            family:"TPU",        line:"95A",         name:"Rojo",                  color:"#C8353A", priceCLP:32990, tempNozzle:"220-240°C", tempBed:"30-60°C", weight:"1kg", finish:"flex" },
+  { id:"tpu-95a-blue",           family:"TPU",        line:"95A",         name:"Azul",                  color:"#1E4FC0", priceCLP:32990, tempNozzle:"220-240°C", tempBed:"30-60°C", weight:"1kg", finish:"flex" },
+  { id:"tpu-95a-yellow",         family:"TPU",        line:"95A",         name:"Amarillo",              color:"#F1B824", priceCLP:32990, tempNozzle:"220-240°C", tempBed:"30-60°C", weight:"1kg", finish:"flex" },
+  { id:"tpu-85a-clear",          family:"TPU",        line:"85A",         name:"Translúcido Suave",     color:"#E8F0F0", priceCLP:36990, tempNozzle:"220-240°C", tempBed:"30-60°C", weight:"500g", finish:"flex" },
+  // PA
+  { id:"pa-black",               family:"PA",         line:"Nylon",       name:"Negro",                 color:"#1A1A1C", priceCLP:44990, tempNozzle:"270-290°C", tempBed:"80-100°C", weight:"1kg", needsAMS:true },
+  { id:"pa-white",               family:"PA",         line:"Nylon",       name:"Natural",               color:"#E6E0D0", priceCLP:44990, tempNozzle:"270-290°C", tempBed:"80-100°C", weight:"1kg", needsAMS:true },
+  // PAHT-CF / PA-CF
+  { id:"paht-cf-black",          family:"PAHT-CF",    line:"High Temp CF",name:"Negro Alta Temp CF",    color:"#1E1E20", priceCLP:79990, tempNozzle:"290-310°C", tempBed:"90-100°C", weight:"1kg", finish:"matte", needsAMS:true },
+  { id:"pa-cf-black",            family:"PA-CF",      line:"Nylon CF",    name:"Negro Nylon CF",        color:"#1E1E20", priceCLP:69990, tempNozzle:"270-300°C", tempBed:"80-100°C", weight:"1kg", finish:"matte", needsAMS:true },
+  // PC
+  { id:"pc-white",               family:"PC",         line:"Policarbonato",name:"Blanco",               color:"#F3F3EE", priceCLP:39990, tempNozzle:"270-300°C", tempBed:"100-110°C", weight:"1kg" },
+  { id:"pc-black",               family:"PC",         line:"Policarbonato",name:"Negro",                color:"#1A1A1C", priceCLP:39990, tempNozzle:"270-300°C", tempBed:"100-110°C", weight:"1kg" },
+  { id:"pc-clear",               family:"PC",         line:"Policarbonato",name:"Translúcido",          color:"#E8F0F0", priceCLP:42990, tempNozzle:"270-300°C", tempBed:"100-110°C", weight:"1kg", finish:"translucent" },
+  // PET-CF
+  { id:"pet-cf-black",           family:"PET-CF",     line:"Carbon Fiber",name:"Negro PET CF",          color:"#1E1E20", priceCLP:54990, tempNozzle:"260-290°C", tempBed:"70-80°C", weight:"1kg", finish:"matte" },
+  // Support
+  { id:"support-pla",            family:"Support",    line:"Para PLA",    name:"Soporte PLA (Blanco)",  color:"#EDEDE8", priceCLP:29990, tempNozzle:"190-230°C", tempBed:"35-55°C", weight:"500g" },
+  { id:"support-petg",           family:"Support",    line:"Para PETG",   name:"Soporte PETG (Negro)",  color:"#2A2A2C", priceCLP:32990, tempNozzle:"230-260°C", tempBed:"70-80°C", weight:"500g" },
+  { id:"support-pva",            family:"Support",    line:"PVA Soluble", name:"PVA Soluble en Agua",   color:"#E8DFC8", priceCLP:49990, tempNozzle:"190-210°C", tempBed:"45-60°C", weight:"500g", needsAMS:true },
+];
+</script>
+
+<!-- Single JSX block: all components + mount. Inline so file:// won't CORS-block Babel fetching .jsx files. -->
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo, useCallback } = React;
+
+// ===== Format helpers =====
+const formatCLP = (n) => {
+  if (n == null || isNaN(n)) return "—";
+  return "$" + Math.round(n).toLocaleString("es-CL");
+};
+
+const AVAILABILITY = {
+  "in-stock":     { label: "En stock",       dot: "var(--ok)" },
+  "low-stock":    { label: "Pocas unidades", dot: "var(--warn)" },
+  "out-of-stock": { label: "Agotado",        dot: "var(--err)" },
+  "discontinued": { label: "Descontinuado",  dot: "var(--muted)" },
+};
+
+// ===== Swatch =====
+function Swatch({ item, size = 64, shape = "rounded", owned = false, onClick, selected = false }) {
+  const radiusByShape = { rounded: 10, square: 2, pill: size / 2, circle: "50%" };
+  const radius = radiusByShape[shape] ?? 10;
+
+  const c1 = item.color;
+  const c2 = item.color2 || item.color;
+  const finish = item.finish;
+
+  let background = c1;
+  if (finish === "dual" || (item.color2 && finish === "marble")) {
+    background = `linear-gradient(135deg, ${c1} 0%, ${c1} 48%, ${c2} 52%, ${c2} 100%)`;
+  } else if (finish === "marble") {
+    background = `
+      radial-gradient(ellipse 60% 30% at 30% 20%, ${c2} 0%, transparent 60%),
+      radial-gradient(ellipse 40% 25% at 70% 70%, ${c2} 0%, transparent 55%),
+      radial-gradient(ellipse 50% 20% at 20% 80%, ${c2} 0%, transparent 50%),
+      ${c1}
+    `;
+  } else if (finish === "metallic") {
+    background = `linear-gradient(135deg,
+      color-mix(in oklab, ${c1} 100%, white 25%) 0%,
+      ${c1} 45%,
+      color-mix(in oklab, ${c1} 100%, black 20%) 100%)`;
+  } else if (finish === "sparkle") {
+    background = `
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.7) 0.5px, transparent 1.2px),
+      radial-gradient(circle at 70% 20%, rgba(255,255,255,0.6) 0.5px, transparent 1.2px),
+      radial-gradient(circle at 40% 70%, rgba(255,255,255,0.6) 0.5px, transparent 1.2px),
+      radial-gradient(circle at 85% 80%, rgba(255,255,255,0.8) 0.5px, transparent 1.5px),
+      radial-gradient(circle at 55% 45%, rgba(255,255,255,0.5) 0.5px, transparent 1px),
+      radial-gradient(circle at 15% 85%, rgba(255,255,255,0.7) 0.5px, transparent 1.2px),
+      radial-gradient(circle at 90% 50%, rgba(255,255,255,0.6) 0.5px, transparent 1px),
+      ${c1}
+    `;
+  } else if (finish === "translucent") {
+    background = `linear-gradient(135deg,
+      color-mix(in oklab, ${c1} 100%, white 40%) 0%,
+      ${c1} 60%,
+      color-mix(in oklab, ${c1} 100%, black 10%) 100%)`;
+  }
+
+  const isLight = (() => {
+    const hex = c1.replace("#", "");
+    if (hex.length !== 6) return false;
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+    const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return lum > 0.78;
+  })();
+
+  return (
+    <button
+      className={`swatch ${selected ? "swatch--selected" : ""} ${owned ? "swatch--owned" : ""}`}
+      onClick={onClick}
+      style={{
+        width: size,
+        height: size,
+        borderRadius: radius,
+        background,
+        boxShadow: finish === "glow"
+          ? `inset 0 0 14px ${c1}, 0 0 0 1px ${isLight ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.08)"}`
+          : `inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.12), 0 0 0 1px ${isLight ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.06)"}`,
+      }}
+      title={`${item.family} ${item.line} · ${item.name}${item.code ? ` · #${item.code}` : ""}`}
+      aria-label={`${item.family} ${item.line} ${item.name}${item.code ? ` código ${item.code}` : ""}`}
+    >
+      {owned && (
+        <span className="swatch-check" aria-label="En mi inventario">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M1.5 5L4 7.5L8.5 2.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </span>
+      )}
+    </button>
+  );
+}
+
+// ===== Icons =====
+const Icon = {
+  Search: (p) => <svg {...p} width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" strokeWidth="1.4"/><path d="M9.5 9.5L12 12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>,
+  X:      (p) => <svg {...p} width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 3L9 9M9 3L3 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>,
+  Plus:   (p) => <svg {...p} width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2V10M2 6H10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>,
+  Minus:  (p) => <svg {...p} width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6H10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>,
+  Check:  (p) => <svg {...p} width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  Sliders:(p) => <svg {...p} width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4H12M2 7H8M2 10H10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><circle cx="10" cy="4" r="1.5" fill="currentColor"/><circle cx="6" cy="7" r="1.5" fill="currentColor"/><circle cx="8" cy="10" r="1.5" fill="currentColor"/></svg>,
+  Spool:  (p) => <svg {...p} width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.2" stroke="currentColor" strokeWidth="1.3"/><circle cx="7" cy="7" r="1.7" stroke="currentColor" strokeWidth="1.3"/><path d="M7 1.8V4M7 10V12.2M1.8 7H4M10 7H12.2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>,
+  Grid:   (p) => <svg {...p} width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.8" y="1.8" width="4" height="4" rx="0.6" stroke="currentColor" strokeWidth="1.3"/><rect x="8.2" y="1.8" width="4" height="4" rx="0.6" stroke="currentColor" strokeWidth="1.3"/><rect x="1.8" y="8.2" width="4" height="4" rx="0.6" stroke="currentColor" strokeWidth="1.3"/><rect x="8.2" y="8.2" width="4" height="4" rx="0.6" stroke="currentColor" strokeWidth="1.3"/></svg>,
+  Trash:  (p) => <svg {...p} width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 3.5H9.5M4.8 3.5V2.5C4.8 2 5.1 1.7 5.5 1.7H6.5C6.9 1.7 7.2 2 7.2 2.5V3.5M3.5 3.5L4 10.3C4 10.7 4.3 11 4.7 11H7.3C7.7 11 8 10.7 8 10.3L8.5 3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
+};
+
+// ===== Detail panel =====
+function DetailPanel({ item, inventory, onUpdate, onClose, spools = [], onCreateSpool, onOpenSpools }) {
+  if (!item) return null;
+  const inv = inventory[item.id] || { owned: false, quantity: 0, customPrice: null, availability: "in-stock", notes: "" };
+  const mySpools = spools.filter((s) => s.filamentId === item.id);
+  const totalRemaining = mySpools.reduce((sum, s) => sum + spoolRemaining(s), 0);
+
+  const setField = (field, value) => {
+    onUpdate(item.id, { ...inv, [field]: value });
+  };
+
+  const price = inv.customPrice != null ? inv.customPrice : item.priceCLP;
+  const isCustomPrice = inv.customPrice != null;
+
+  return (
+    <aside className="detail-panel" role="dialog" aria-label={`Detalles ${item.name}`}>
+      <div className="detail-head">
+        <div className="detail-head-swatch">
+          <Swatch item={item} size={80} shape="rounded" owned={inv.owned} />
+        </div>
+        <div className="detail-head-text">
+          <div className="detail-family">
+            {item.family} · {item.line}
+            {item.code && <span className="detail-code">#{item.code}</span>}
+          </div>
+          <h2 className="detail-name">{item.name}</h2>
+          <div className="detail-hex"><code>{item.color}{item.color2 ? ` · ${item.color2}` : ""}</code></div>
+        </div>
+        <button className="icon-btn icon-btn--close" onClick={onClose} aria-label="Cerrar">
+          <Icon.X />
+        </button>
+      </div>
+
+      <div className="detail-body">
+        <div className="field-row">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={inv.owned}
+              onChange={(e) => setField("owned", e.target.checked)}
+            />
+            <span className="switch-track"><span className="switch-thumb" /></span>
+            <span className="switch-label">
+              {inv.owned ? "Lo tengo en mi inventario" : "No lo tengo"}
+            </span>
+          </label>
+        </div>
+
+        <div className="field-row field-row--split">
+          <div className="field-label">Rollos</div>
+          <div className="stepper">
+            <button
+              className="stepper-btn"
+              onClick={() => {
+                const next = Math.max(0, (inv.quantity || 0) - 1);
+                onUpdate(item.id, { ...inv, quantity: next, owned: next > 0 ? inv.owned : false });
+              }}
+              aria-label="Disminuir"
+            ><Icon.Minus /></button>
+            <input
+              type="number"
+              className="stepper-input"
+              value={inv.quantity || 0}
+              min="0"
+              onChange={(e) => {
+                const v = Math.max(0, parseInt(e.target.value) || 0);
+                onUpdate(item.id, { ...inv, quantity: v, owned: v > 0 ? true : inv.owned });
+              }}
+            />
+            <button
+              className="stepper-btn"
+              onClick={() => {
+                const next = (inv.quantity || 0) + 1;
+                onUpdate(item.id, { ...inv, quantity: next, owned: true });
+              }}
+              aria-label="Aumentar"
+            ><Icon.Plus /></button>
+          </div>
+        </div>
+
+        <div className="field-row field-row--split">
+          <div className="field-label">
+            Precio <span className="field-hint">{isCustomPrice ? "personalizado" : "referencia"}</span>
+          </div>
+          <div className="price-input-wrap">
+            <span className="price-prefix">$</span>
+            <input
+              type="number"
+              className="price-input"
+              value={price}
+              onChange={(e) => {
+                const v = parseInt(e.target.value);
+                setField("customPrice", isNaN(v) ? null : v);
+              }}
+            />
+            {isCustomPrice && (
+              <button
+                className="link-btn"
+                onClick={() => setField("customPrice", null)}
+                title="Volver a precio de referencia"
+              >
+                Restaurar
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="field-row">
+          <div className="field-label">Disponibilidad</div>
+          <div className="pill-group" role="radiogroup">
+            {Object.entries(AVAILABILITY).map(([key, cfg]) => (
+              <button
+                key={key}
+                role="radio"
+                aria-checked={inv.availability === key}
+                className={`pill ${inv.availability === key ? "pill--active" : ""}`}
+                onClick={() => setField("availability", key)}
+              >
+                <span className="pill-dot" style={{ background: cfg.dot }} />
+                {cfg.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="field-row">
+          <div className="field-label">Carretes ({mySpools.length})</div>
+          {mySpools.length > 0 && (
+            <div className="detail-spools">
+              {mySpools.map((sp) => {
+                const rem = spoolRemaining(sp);
+                const pct = sp.initialG > 0 ? (rem / sp.initialG) * 100 : 0;
+                return (
+                  <div key={sp.id} className="detail-spool-item" onClick={onOpenSpools} role="button" title="Ver en carretes">
+                    <div className="detail-spool-label">{sp.label || `${formatG(sp.initialG)} spool`}</div>
+                    <div className="spool-progress-bar" style={{ flex: 1 }}>
+                      <div className="spool-progress-fill" style={{ width: `${pct}%` }} />
+                    </div>
+                    <div className="detail-spool-rem">{formatG(rem)}</div>
+                  </div>
+                );
+              })}
+              <div className="detail-spool-total">Total restante: <strong>{formatG(totalRemaining)}</strong></div>
+            </div>
+          )}
+          <button className="btn btn-secondary" style={{ marginTop: 8 }} onClick={() => onCreateSpool && onCreateSpool(item.id)}>
+            <Icon.Plus /> Nuevo carrete
+          </button>
+        </div>
+
+        <div className="spec-grid">
+          <div className="spec">
+            <div className="spec-label">Boquilla</div>
+            <div className="spec-value">{item.tempNozzle}</div>
+          </div>
+          <div className="spec">
+            <div className="spec-label">Cama</div>
+            <div className="spec-value">{item.tempBed}</div>
+          </div>
+          <div className="spec">
+            <div className="spec-label">Peso</div>
+            <div className="spec-value">{item.weight}</div>
+          </div>
+          <div className="spec">
+            <div className="spec-label">AMS</div>
+            <div className="spec-value">{item.needsAMS ? "Requerido" : "Compatible"}</div>
+          </div>
+        </div>
+
+        <div className="detail-footer">
+          {item.code && <div className="detail-id">Código Bambu · <code>{item.code}</code></div>}
+          <div className="detail-id">ID · <code>{item.id}</code></div>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+// ===== Local storage hook =====
+const STORAGE_KEY = "filamentos_inventory_v1";
+const TWEAKS_KEY  = "filamentos_tweaks_v1";
+const CUSTOMS_KEY = "filamentos_custom_v1";
+const SPOOLS_KEY  = "filamentos_spools_v1";
+const CALC_KEY    = "filamentos_calc_v1";
+
+function parseGrams(str) {
+  if (str == null) return NaN;
+  const s = String(str).replace(",", ".").trim();
+  if (!s) return NaN;
+  const n = parseFloat(s);
+  return isFinite(n) ? n : NaN;
+}
+
+function formatG(n) {
+  const v = Math.round(n * 100) / 100;
+  return `${v.toLocaleString("es-CL", { maximumFractionDigits: 2 })} g`;
+}
+
+function weightToGrams(w) {
+  if (!w) return 1000;
+  const m = String(w).match(/([\d.]+)\s*(kg|g)?/i);
+  if (!m) return 1000;
+  const n = parseFloat(m[1]);
+  if (!isFinite(n)) return 1000;
+  const unit = (m[2] || "kg").toLowerCase();
+  return unit === "kg" ? n * 1000 : n;
+}
+
+function todayISO() {
+  const d = new Date();
+  const off = d.getTimezoneOffset();
+  const local = new Date(d.getTime() - off * 60000);
+  return local.toISOString().slice(0, 10);
+}
+
+function spoolUsed(sp) {
+  return (sp.entries || []).reduce((s, e) => s + (parseFloat(e.grams) || 0), 0);
+}
+function spoolRemaining(sp) {
+  return Math.max(0, (sp.initialG || 0) - spoolUsed(sp));
+}
+
+const TWEAK_DEFAULTS = {
+  theme: "light",
+  swatchSize: 64,
+  swatchShape: "rounded",
+  density: "cozy",
+  showTweaks: false,
+};
+
+function useLocal(key, initial) {
+  const [val, setVal] = useState(() => {
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw) return { ...initial, ...JSON.parse(raw) };
+    } catch (e) {}
+    return initial;
+  });
+  useEffect(() => {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+  }, [key, val]);
+  return [val, setVal];
+}
+
+// ===== Tweaks panel =====
+function TweaksPanel({ tweaks, setTweaks }) {
+  const set = (k, v) => setTweaks((t) => ({ ...t, [k]: v }));
+  return (
+    <div className="tweaks">
+      <div className="tweaks-head">
+        <span className="tweaks-title">Tweaks</span>
+        <button className="icon-btn" onClick={() => set("showTweaks", false)} aria-label="Cerrar">
+          <Icon.X />
+        </button>
+      </div>
+
+      <div className="tweaks-group">
+        <div className="tweaks-label">Tema</div>
+        <div className="tweak-seg">
+          {["light", "dark"].map((v) => (
+            <button key={v} className={tweaks.theme === v ? "active" : ""} onClick={() => set("theme", v)}>
+              {v === "light" ? "Claro" : "Oscuro"}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="tweaks-group">
+        <div className="tweaks-label">Forma del swatch</div>
+        <div className="tweak-seg">
+          {[["rounded","Redondeado"],["square","Cuadrado"],["circle","Círculo"]].map(([v, l]) => (
+            <button key={v} className={tweaks.swatchShape === v ? "active" : ""} onClick={() => set("swatchShape", v)}>{l}</button>
+          ))}
+        </div>
+      </div>
+
+      <div className="tweaks-group">
+        <div className="tweaks-label">Densidad</div>
+        <div className="tweak-seg">
+          {[["tight","Compacta"],["cozy","Normal"],["roomy","Amplia"]].map(([v, l]) => (
+            <button key={v} className={tweaks.density === v ? "active" : ""} onClick={() => set("density", v)}>{l}</button>
+          ))}
+        </div>
+      </div>
+
+      <div className="tweaks-group">
+        <div className="tweaks-label">Tamaño del swatch</div>
+        <div className="tweak-slider">
+          <input
+            type="range"
+            min="40" max="120" step="4"
+            value={tweaks.swatchSize || 64}
+            onChange={(e) => set("swatchSize", parseInt(e.target.value))}
+          />
+          <span className="tweak-slider-val">{tweaks.swatchSize || 64}px</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ===== Add custom filament modal =====
+const FINISH_OPTIONS = [
+  ["",            "Ninguno (sólido)"],
+  ["matte",       "Mate"],
+  ["metallic",    "Metálico / Silk"],
+  ["sparkle",     "Galaxia (sparkle)"],
+  ["marble",      "Mármol"],
+  ["dual",        "Dual / Gradiente"],
+  ["translucent", "Translúcido"],
+  ["glow",        "Fosforescente"],
+  ["flex",        "Flexible"],
+];
+
+function AddFilamentModal({ existingFamilies, existingCodes, onAdd, onClose }) {
+  const [mode, setMode] = useState("code"); // "code" | "manual"
+  const [family, setFamily] = useState(existingFamilies[0]?.name || "PLA");
+  const [newFamily, setNewFamily] = useState("");
+  const [line, setLine] = useState("Personalizado");
+  const [name, setName] = useState("");
+  const [color, setColor] = useState("#6A3FB0");
+  const [useColor2, setUseColor2] = useState(false);
+  const [color2, setColor2] = useState("#F1B824");
+  const [finish, setFinish] = useState("");
+  const [priceCLP, setPriceCLP] = useState(20000);
+  const [weight, setWeight] = useState("1kg");
+  const [tempNozzle, setTempNozzle] = useState("200-220°C");
+  const [tempBed, setTempBed] = useState("35-55°C");
+  const [code, setCode] = useState("");
+
+  const catalog = (typeof window !== "undefined" && window.BAMBU_CATALOG) || {};
+  const catalogMatch = code && /^\d{4,5}$/.test(code) ? catalog[code] : null;
+  const codeIsDuplicate = code && existingCodes.has(code);
+
+  // Auto-fill form from catalog when the code matches
+  useEffect(() => {
+    if (!catalogMatch) return;
+    setFamily(catalogMatch.family);
+    setLine(catalogMatch.line);
+    setName(catalogMatch.name);
+    setColor(catalogMatch.color);
+    setTempNozzle(catalogMatch.tempNozzle || "200-220°C");
+    setTempBed(catalogMatch.tempBed || "35-55°C");
+    setWeight(catalogMatch.weight || "1kg");
+    setFinish(catalogMatch.finish || "");
+    if (catalogMatch.color2) {
+      setUseColor2(true);
+      setColor2(catalogMatch.color2);
+    }
+  }, [code]); // eslint-disable-line
+
+  const familyValue = family === "__new__" ? newFamily.trim() : family;
+  const codeValid = !code || /^\d{4,5}$/.test(code);
+  const canSubmit = familyValue && name.trim() && /^#[0-9A-Fa-f]{6}$/.test(color) && codeValid && !codeIsDuplicate;
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    const item = {
+      id: code ? `bambu-${code}` : `custom-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      family: familyValue,
+      line: line.trim() || "Personalizado",
+      name: name.trim(),
+      color: color.toUpperCase(),
+      priceCLP: parseInt(priceCLP) || 0,
+      tempNozzle: tempNozzle.trim() || "—",
+      tempBed: tempBed.trim() || "—",
+      weight: weight.trim() || "1kg",
+      custom: true,
+    };
+    if (code) item.code = code;
+    if (useColor2 && /^#[0-9A-Fa-f]{6}$/.test(color2)) item.color2 = color2.toUpperCase();
+    if (finish) item.finish = finish;
+    onAdd(item);
+    onClose();
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <form className="modal" onClick={(e) => e.stopPropagation()} onSubmit={submit}>
+        <div className="modal-head">
+          <div className="modal-title">Agregar filamento</div>
+          <button type="button" className="icon-btn" onClick={onClose} aria-label="Cerrar">
+            <Icon.X />
+          </button>
+        </div>
+
+        <div className="modal-tabs">
+          <button
+            type="button"
+            className={`modal-tab ${mode === "code" ? "modal-tab--active" : ""}`}
+            onClick={() => setMode("code")}
+          >
+            Por código Bambu
+          </button>
+          <button
+            type="button"
+            className={`modal-tab ${mode === "manual" ? "modal-tab--active" : ""}`}
+            onClick={() => { setMode("manual"); setCode(""); }}
+          >
+            Manual
+          </button>
+        </div>
+
+        <div className="modal-body">
+          {mode === "code" && (
+            <>
+              <div className="form-row">
+                <label className="form-label">Código Bambu (4-5 dígitos)</label>
+                <input
+                  className="form-input"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Ej: 10102"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 5))}
+                  autoFocus
+                  style={{ fontFamily: "var(--font-mono)", fontSize: 16, letterSpacing: "0.05em" }}
+                />
+                {code && codeIsDuplicate && (
+                  <div className="form-help form-help--warn">
+                    Este código ya está en tu catálogo.
+                  </div>
+                )}
+                {code && !codeIsDuplicate && catalogMatch && (
+                  <div className="form-help form-help--ok">
+                    ✓ Reconocido: <strong>{catalogMatch.family} {catalogMatch.line}</strong> — {catalogMatch.name}
+                  </div>
+                )}
+                {code && !codeIsDuplicate && !catalogMatch && codeValid && (
+                  <div className="form-help">
+                    Código desconocido. Completa los datos manualmente abajo.
+                  </div>
+                )}
+                {code && !codeValid && (
+                  <div className="form-help form-help--warn">
+                    El código debe tener 4 o 5 dígitos.
+                  </div>
+                )}
+              </div>
+              {!codeIsDuplicate && code && codeValid && (
+                <div className="preview-row">
+                  <div
+                    className="preview-swatch"
+                    style={{
+                      background: useColor2 && /^#[0-9A-Fa-f]{6}$/.test(color2)
+                        ? `linear-gradient(135deg, ${color} 0%, ${color} 48%, ${color2} 52%, ${color2} 100%)`
+                        : color,
+                    }}
+                  />
+                  <div className="preview-info">
+                    <div className="preview-name">{name || "Sin nombre"}</div>
+                    <div className="preview-meta">{familyValue} · {line}</div>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          <div className="form-row">
+            <label className="form-label">Nombre</label>
+            <input
+              className="form-input"
+              type="text"
+              placeholder="Ej: Azul Marino Mate"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoFocus={mode === "manual"}
+              required
+            />
+          </div>
+
+          <div className="form-row form-row--split">
+            <div className="form-row">
+              <label className="form-label">Familia</label>
+              <select
+                className="form-select"
+                value={family}
+                onChange={(e) => setFamily(e.target.value)}
+              >
+                {existingFamilies.map((f) => (
+                  <option key={f.name} value={f.name}>{f.name}</option>
+                ))}
+                <option value="__new__">+ Nueva familia…</option>
+              </select>
+              {family === "__new__" && (
+                <input
+                  className="form-input"
+                  type="text"
+                  placeholder="Nombre de la familia"
+                  value={newFamily}
+                  onChange={(e) => setNewFamily(e.target.value)}
+                  style={{ marginTop: 6 }}
+                  required
+                />
+              )}
+            </div>
+            <div className="form-row">
+              <label className="form-label">Línea</label>
+              <input
+                className="form-input"
+                type="text"
+                placeholder="Basic, Matte, Silk…"
+                value={line}
+                onChange={(e) => setLine(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <label className="form-label">Color principal</label>
+            <div className="form-color-row">
+              <input
+                type="color"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+              />
+              <input
+                className="form-input"
+                type="text"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+                maxLength="7"
+              />
+            </div>
+          </div>
+
+          <label className="form-toggle">
+            <input
+              type="checkbox"
+              checked={useColor2}
+              onChange={(e) => setUseColor2(e.target.checked)}
+            />
+            Agregar segundo color (para dual / mármol)
+          </label>
+
+          {useColor2 && (
+            <div className="form-row">
+              <label className="form-label">Color secundario</label>
+              <div className="form-color-row">
+                <input
+                  type="color"
+                  value={color2}
+                  onChange={(e) => setColor2(e.target.value)}
+                />
+                <input
+                  className="form-input"
+                  type="text"
+                  value={color2}
+                  onChange={(e) => setColor2(e.target.value)}
+                  maxLength="7"
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="form-row">
+            <label className="form-label">Acabado</label>
+            <select
+              className="form-select"
+              value={finish}
+              onChange={(e) => setFinish(e.target.value)}
+            >
+              {FINISH_OPTIONS.map(([v, l]) => (
+                <option key={v} value={v}>{l}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-row form-row--split">
+            <div className="form-row">
+              <label className="form-label">Precio CLP</label>
+              <input
+                className="form-input"
+                type="number"
+                min="0"
+                value={priceCLP}
+                onChange={(e) => setPriceCLP(e.target.value)}
+              />
+            </div>
+            <div className="form-row">
+              <label className="form-label">Peso</label>
+              <input
+                className="form-input"
+                type="text"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="form-row form-row--split">
+            <div className="form-row">
+              <label className="form-label">Temp. boquilla</label>
+              <input
+                className="form-input"
+                type="text"
+                value={tempNozzle}
+                onChange={(e) => setTempNozzle(e.target.value)}
+              />
+            </div>
+            <div className="form-row">
+              <label className="form-label">Temp. cama</label>
+              <input
+                className="form-input"
+                type="text"
+                value={tempBed}
+                onChange={(e) => setTempBed(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="modal-foot">
+          <button type="button" className="btn btn-secondary" onClick={onClose}>Cancelar</button>
+          <button type="submit" className="btn btn-primary" disabled={!canSubmit}>
+            {code ? `Agregar #${code}` : "Agregar color"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+// ===== New spool modal =====
+function NewSpoolModal({ data, initialFilamentId, onCreate, onClose }) {
+  const [filamentId, setFilamentId] = useState(initialFilamentId || "");
+  const [initialG, setInitialG] = useState("1000");
+  const [label, setLabel] = useState("");
+  const [query, setQuery] = useState("");
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return data.slice(0, 40);
+    return data.filter((f) => `${f.family} ${f.line} ${f.name} ${f.code || ""}`.toLowerCase().includes(q)).slice(0, 60);
+  }, [data, query]);
+
+  const selected = filamentId ? data.find((f) => f.id === filamentId) : null;
+  const g = parseGrams(initialG);
+  const canSubmit = !!selected && isFinite(g) && g > 0;
+
+  useEffect(() => {
+    if (selected) setInitialG(String(weightToGrams(selected.weight)));
+  }, [filamentId]); // eslint-disable-line
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    onCreate({
+      id: `spool-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      filamentId: selected.id,
+      createdAt: new Date().toISOString(),
+      initialG: g,
+      label: label.trim(),
+      entries: [],
+    });
+    onClose();
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <form className="modal" onClick={(e) => e.stopPropagation()} onSubmit={submit}>
+        <div className="modal-head">
+          <div className="modal-title">Nuevo carrete</div>
+          <button type="button" className="icon-btn" onClick={onClose} aria-label="Cerrar"><Icon.X /></button>
+        </div>
+        <div className="modal-body">
+          <div className="form-row">
+            <label className="form-label">Filamento</label>
+            {selected ? (
+              <div className="preview-row">
+                <div className="preview-swatch" style={{ background: selected.color2 ? `linear-gradient(135deg, ${selected.color} 0%, ${selected.color} 48%, ${selected.color2} 52%, ${selected.color2} 100%)` : selected.color }} />
+                <div className="preview-info">
+                  <div className="preview-name">{selected.name}</div>
+                  <div className="preview-meta">{selected.family} · {selected.line}{selected.code ? ` · #${selected.code}` : ""}</div>
+                </div>
+                <button type="button" className="link-btn" onClick={() => setFilamentId("")} style={{ marginLeft: "auto" }}>Cambiar</button>
+              </div>
+            ) : (
+              <>
+                <input className="form-input" type="text" autoFocus placeholder="Buscar por nombre, familia o código…" value={query} onChange={(e) => setQuery(e.target.value)} />
+                <div className="spool-picker">
+                  {filtered.map((f) => (
+                    <button type="button" key={f.id} className="spool-picker-item" onClick={() => setFilamentId(f.id)}>
+                      <span className="spool-picker-swatch" style={{ background: f.color2 ? `linear-gradient(135deg, ${f.color} 0%, ${f.color} 48%, ${f.color2} 52%, ${f.color2} 100%)` : f.color }} />
+                      <span className="spool-picker-text">
+                        <span className="spool-picker-name">{f.name}</span>
+                        <span className="spool-picker-meta">{f.family} · {f.line}{f.code ? ` · #${f.code}` : ""}</span>
+                      </span>
+                    </button>
+                  ))}
+                  {filtered.length === 0 && <div className="form-help">Sin resultados</div>}
+                </div>
+              </>
+            )}
+          </div>
+
+          <div className="form-row form-row--split">
+            <div className="form-row">
+              <label className="form-label">Peso inicial (g)</label>
+              <input className="form-input" type="text" inputMode="decimal" value={initialG} onChange={(e) => setInitialG(e.target.value)} />
+            </div>
+            <div className="form-row">
+              <label className="form-label">Etiqueta (opcional)</label>
+              <input className="form-input" type="text" placeholder="Ej: Carrete #2" value={label} onChange={(e) => setLabel(e.target.value)} />
+            </div>
+          </div>
+        </div>
+        <div className="modal-foot">
+          <button type="button" className="btn btn-secondary" onClick={onClose}>Cancelar</button>
+          <button type="submit" className="btn btn-primary" disabled={!canSubmit}>Crear carrete</button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+// ===== Spool card =====
+function SpoolCard({ spool, filament, onAddEntry, onRemoveEntry, onDelete }) {
+  const [grams, setGrams] = useState("");
+  const [note, setNote] = useState("");
+  const [date, setDate] = useState(todayISO());
+
+  const used = spoolUsed(spool);
+  const remaining = spoolRemaining(spool);
+  const pctUsed = spool.initialG > 0 ? Math.min(100, (used / spool.initialG) * 100) : 0;
+  const pctRem = 100 - pctUsed;
+
+  const add = (e) => {
+    e.preventDefault();
+    const g = parseGrams(grams);
+    if (!isFinite(g) || g <= 0) return;
+    onAddEntry(spool.id, {
+      id: `u-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      date: date || todayISO(),
+      grams: g,
+      note: note.trim(),
+    });
+    setGrams("");
+    setNote("");
+  };
+
+  const color = filament?.color || "#888";
+  const color2 = filament?.color2;
+  const swatchBg = color2 ? `linear-gradient(135deg, ${color} 0%, ${color} 48%, ${color2} 52%, ${color2} 100%)` : color;
+
+  return (
+    <div className="spool-card">
+      <div className="spool-card-head">
+        <div className="spool-card-swatch" style={{ background: swatchBg }} />
+        <div className="spool-card-title">
+          <div className="spool-card-name">
+            {filament ? filament.name : "Filamento eliminado"}
+            {spool.label && <span className="spool-card-label"> · {spool.label}</span>}
+          </div>
+          <div className="spool-card-meta">
+            {filament ? `${filament.family} · ${filament.line}${filament.code ? ` · #${filament.code}` : ""}` : ""}
+          </div>
+        </div>
+        <button className="icon-btn" onClick={() => onDelete(spool.id)} title="Eliminar carrete"><Icon.Trash /></button>
+      </div>
+
+      <div className="spool-progress">
+        <div className="spool-progress-bar">
+          <div className="spool-progress-fill" style={{ width: `${pctRem}%` }} />
+        </div>
+        <div className="spool-progress-stats">
+          <div><span className="spool-stat-label">Restante</span><span className="spool-stat-value">{formatG(remaining)}</span></div>
+          <div><span className="spool-stat-label">Usado</span><span className="spool-stat-value">{formatG(used)}</span></div>
+          <div><span className="spool-stat-label">Inicial</span><span className="spool-stat-value">{formatG(spool.initialG)}</span></div>
+          <div><span className="spool-stat-label">%</span><span className="spool-stat-value">{pctRem.toFixed(1)}%</span></div>
+        </div>
+      </div>
+
+      <form className="spool-add" onSubmit={add}>
+        <input type="text" inputMode="decimal" className="form-input" placeholder="Gramos usados" value={grams} onChange={(e) => setGrams(e.target.value)} />
+        <input type="text" className="form-input" placeholder="Nota / proyecto (opcional)" value={note} onChange={(e) => setNote(e.target.value)} />
+        <input type="date" className="form-input spool-add-date" value={date} onChange={(e) => setDate(e.target.value)} />
+        <button type="submit" className="btn btn-primary" disabled={!isFinite(parseGrams(grams)) || parseGrams(grams) <= 0}>
+          <Icon.Minus /> Registrar
+        </button>
+      </form>
+
+      {spool.entries && spool.entries.length > 0 && (
+        <div className="spool-entries">
+          {spool.entries.slice().reverse().map((e) => (
+            <div key={e.id} className="spool-entry">
+              <span className="spool-entry-date">{e.date}</span>
+              <span className="spool-entry-grams">-{formatG(e.grams)}</span>
+              <span className="spool-entry-note">{e.note || "—"}</span>
+              <button className="icon-btn" onClick={() => onRemoveEntry(spool.id, e.id)} title="Eliminar uso"><Icon.X /></button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ===== Spools view =====
+function SpoolsView({ spools, data, onAddEntry, onRemoveEntry, onDelete, onNew }) {
+  const filamentById = useMemo(() => {
+    const m = new Map();
+    for (const f of data) m.set(f.id, f);
+    return m;
+  }, [data]);
+
+  const totals = useMemo(() => {
+    let initial = 0, used = 0, remaining = 0;
+    for (const sp of spools) {
+      initial += sp.initialG || 0;
+      used += spoolUsed(sp);
+      remaining += spoolRemaining(sp);
+    }
+    return { initial, used, remaining };
+  }, [spools]);
+
+  const sorted = useMemo(() => {
+    return spools.slice().sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+  }, [spools]);
+
+  return (
+    <>
+      <div className="spool-totals">
+        <div className="spool-total"><div className="spool-total-label">Carretes</div><div className="spool-total-value">{spools.length}</div></div>
+        <div className="spool-total"><div className="spool-total-label">Restante total</div><div className="spool-total-value">{formatG(totals.remaining)}</div></div>
+        <div className="spool-total"><div className="spool-total-label">Usado total</div><div className="spool-total-value">{formatG(totals.used)}</div></div>
+        <div className="spool-total"><div className="spool-total-label">Inicial total</div><div className="spool-total-value">{formatG(totals.initial)}</div></div>
+      </div>
+
+      {sorted.length === 0 ? (
+        <div className="empty">
+          <div className="empty-title">Aún no tienes carretes registrados</div>
+          <div>Crea uno para empezar a llevar el gasto de gramos por impresión.</div>
+          <div style={{ marginTop: 14 }}>
+            <button className="btn btn-primary" onClick={onNew}><Icon.Plus /> Nuevo carrete</button>
+          </div>
+        </div>
+      ) : (
+        <div className="spool-list">
+          {sorted.map((sp) => (
+            <SpoolCard
+              key={sp.id}
+              spool={sp}
+              filament={filamentById.get(sp.filamentId)}
+              onAddEntry={onAddEntry}
+              onRemoveEntry={onRemoveEntry}
+              onDelete={onDelete}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
+// ===== Calculator view =====
+const CALC_DEFAULTS = {
+  filamentId: "",
+  filamentPricePerKg: 16990,
+  grams: 50,
+  printHours: 2,
+  printMinutes: 30,
+  printerWatts: 150,
+  kwhCost: 150,
+  failureRatePct: 5,
+  wearPerHour: 200,
+  laborHours: 0,
+  laborMinutes: 15,
+  laborRate: 8000,
+  postProcessing: 0,
+  packaging: 500,
+  marginPct: 60,
+  ivaPct: 19,
+  includeIva: false,
+};
+
+function CalculatorView({ calc, setCalc, data, inventory }) {
+  const set = (k, v) => setCalc((c) => ({ ...c, [k]: v }));
+  const num = (v, fallback = 0) => {
+    const n = parseFloat(v);
+    return isNaN(n) ? fallback : n;
+  };
+
+  const ownedFilaments = useMemo(
+    () => data.filter((f) => {
+      const inv = inventory[f.id];
+      return inv?.owned || (inv?.quantity || 0) > 0;
+    }),
+    [data, inventory]
+  );
+
+  const selectedFilament = calc.filamentId ? data.find((f) => f.id === calc.filamentId) : null;
+
+  useEffect(() => {
+    if (selectedFilament) {
+      const inv = inventory[selectedFilament.id];
+      const price = inv?.customPrice != null ? inv.customPrice : selectedFilament.priceCLP;
+      if (price && price !== calc.filamentPricePerKg) {
+        setCalc((c) => ({ ...c, filamentPricePerKg: price }));
+      }
+    }
+  }, [calc.filamentId]);
+
+  const grams = num(calc.grams);
+  const pricePerKg = num(calc.filamentPricePerKg);
+  const printHoursTotal = num(calc.printHours) + num(calc.printMinutes) / 60;
+  const printerWatts = num(calc.printerWatts);
+  const kwhCost = num(calc.kwhCost);
+  const failurePct = num(calc.failureRatePct);
+  const wearPerHour = num(calc.wearPerHour);
+  const laborHoursTotal = num(calc.laborHours) + num(calc.laborMinutes) / 60;
+  const laborRate = num(calc.laborRate);
+  const postProcessing = num(calc.postProcessing);
+  const packaging = num(calc.packaging);
+  const marginPct = num(calc.marginPct);
+  const ivaPct = num(calc.ivaPct);
+
+  const filamentCost = (grams / 1000) * pricePerKg;
+  const electricityCost = (printerWatts / 1000) * printHoursTotal * kwhCost;
+  const wearCost = printHoursTotal * wearPerHour;
+  const laborCost = laborHoursTotal * laborRate;
+
+  const baseCost = filamentCost + electricityCost + wearCost + laborCost + postProcessing + packaging;
+  const failureAdjusted = baseCost * (1 + failurePct / 100);
+  const totalCost = failureAdjusted;
+
+  const priceBeforeIva = totalCost * (1 + marginPct / 100);
+  const finalPrice = calc.includeIva ? priceBeforeIva * (1 + ivaPct / 100) : priceBeforeIva;
+  const profit = priceBeforeIva - totalCost;
+
+  const rows = [
+    { label: "Filamento", value: filamentCost, hint: `${grams} g × ${formatCLP(pricePerKg / 1000)}/g` },
+    { label: "Electricidad", value: electricityCost, hint: `${printerWatts} W × ${printHoursTotal.toFixed(2)} h × ${formatCLP(kwhCost)}/kWh` },
+    { label: "Desgaste / mantenimiento", value: wearCost, hint: `${printHoursTotal.toFixed(2)} h × ${formatCLP(wearPerHour)}/h` },
+    { label: "Diseño / mano de obra", value: laborCost, hint: `${laborHoursTotal.toFixed(2)} h × ${formatCLP(laborRate)}/h` },
+    { label: "Post-procesado", value: postProcessing },
+    { label: "Embalaje", value: packaging },
+  ];
+
+  return (
+    <div className="calc">
+      <div className="calc-grid">
+        <section className="calc-card">
+          <h3 className="calc-section-title">Filamento</h3>
+
+          <div className="form-row">
+            <label className="form-label">Filamento usado</label>
+            <select
+              className="form-select"
+              value={calc.filamentId}
+              onChange={(e) => set("filamentId", e.target.value)}
+            >
+              <option value="">— Precio manual —</option>
+              {ownedFilaments.length > 0 && (
+                <optgroup label="Los que tengo">
+                  {ownedFilaments.map((f) => (
+                    <option key={f.id} value={f.id}>
+                      {f.family} {f.line} · {f.name}{f.code ? ` (#${f.code})` : ""}
+                    </option>
+                  ))}
+                </optgroup>
+              )}
+              <optgroup label="Todo el catálogo">
+                {data.filter((f) => !ownedFilaments.includes(f)).map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.family} {f.line} · {f.name}{f.code ? ` (#${f.code})` : ""}
+                  </option>
+                ))}
+              </optgroup>
+            </select>
+            {selectedFilament && (
+              <div className="calc-preview">
+                <div
+                  className="preview-swatch"
+                  style={{
+                    background: selectedFilament.color2
+                      ? `linear-gradient(135deg, ${selectedFilament.color} 0%, ${selectedFilament.color} 48%, ${selectedFilament.color2} 52%, ${selectedFilament.color2} 100%)`
+                      : selectedFilament.color,
+                  }}
+                />
+                <div className="preview-info">
+                  <div className="preview-name">{selectedFilament.name}</div>
+                  <div className="preview-meta">{selectedFilament.family} · {selectedFilament.line}</div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="form-row--split">
+            <div className="form-row">
+              <label className="form-label">Precio por kg (CLP)</label>
+              <input type="number" className="form-input" value={calc.filamentPricePerKg}
+                onChange={(e) => set("filamentPricePerKg", e.target.value)} />
+            </div>
+            <div className="form-row">
+              <label className="form-label">Gramos usados</label>
+              <input type="number" className="form-input" value={calc.grams}
+                onChange={(e) => set("grams", e.target.value)} />
+            </div>
+          </div>
+        </section>
+
+        <section className="calc-card">
+          <h3 className="calc-section-title">Tiempo de impresión</h3>
+          <div className="form-row--split">
+            <div className="form-row">
+              <label className="form-label">Horas</label>
+              <input type="number" className="form-input" value={calc.printHours}
+                onChange={(e) => set("printHours", e.target.value)} />
+            </div>
+            <div className="form-row">
+              <label className="form-label">Minutos</label>
+              <input type="number" className="form-input" value={calc.printMinutes}
+                onChange={(e) => set("printMinutes", e.target.value)} />
+            </div>
+          </div>
+          <div className="form-row--split">
+            <div className="form-row">
+              <label className="form-label">Potencia impresora (W)</label>
+              <input type="number" className="form-input" value={calc.printerWatts}
+                onChange={(e) => set("printerWatts", e.target.value)} />
+            </div>
+            <div className="form-row">
+              <label className="form-label">Costo kWh (CLP)</label>
+              <input type="number" className="form-input" value={calc.kwhCost}
+                onChange={(e) => set("kwhCost", e.target.value)} />
+            </div>
+          </div>
+          <div className="form-row--split">
+            <div className="form-row">
+              <label className="form-label">Desgaste / hora (CLP)</label>
+              <input type="number" className="form-input" value={calc.wearPerHour}
+                onChange={(e) => set("wearPerHour", e.target.value)} />
+            </div>
+            <div className="form-row">
+              <label className="form-label">Tasa de falla (%)</label>
+              <input type="number" className="form-input" value={calc.failureRatePct}
+                onChange={(e) => set("failureRatePct", e.target.value)} />
+            </div>
+          </div>
+        </section>
+
+        <section className="calc-card">
+          <h3 className="calc-section-title">Mano de obra y extras</h3>
+          <div className="form-row--split">
+            <div className="form-row">
+              <label className="form-label">Horas diseño/trabajo</label>
+              <input type="number" className="form-input" value={calc.laborHours}
+                onChange={(e) => set("laborHours", e.target.value)} />
+            </div>
+            <div className="form-row">
+              <label className="form-label">Minutos</label>
+              <input type="number" className="form-input" value={calc.laborMinutes}
+                onChange={(e) => set("laborMinutes", e.target.value)} />
+            </div>
+          </div>
+          <div className="form-row">
+            <label className="form-label">Tarifa por hora (CLP)</label>
+            <input type="number" className="form-input" value={calc.laborRate}
+              onChange={(e) => set("laborRate", e.target.value)} />
+          </div>
+          <div className="form-row--split">
+            <div className="form-row">
+              <label className="form-label">Post-procesado (CLP)</label>
+              <input type="number" className="form-input" value={calc.postProcessing}
+                onChange={(e) => set("postProcessing", e.target.value)} />
+            </div>
+            <div className="form-row">
+              <label className="form-label">Embalaje (CLP)</label>
+              <input type="number" className="form-input" value={calc.packaging}
+                onChange={(e) => set("packaging", e.target.value)} />
+            </div>
+          </div>
+        </section>
+
+        <section className="calc-card">
+          <h3 className="calc-section-title">Margen y precio</h3>
+          <div className="form-row">
+            <label className="form-label">Margen de utilidad (%)</label>
+            <input type="number" className="form-input" value={calc.marginPct}
+              onChange={(e) => set("marginPct", e.target.value)} />
+          </div>
+          <div className="form-row--split">
+            <div className="form-row">
+              <label className="form-label">IVA (%)</label>
+              <input type="number" className="form-input" value={calc.ivaPct}
+                onChange={(e) => set("ivaPct", e.target.value)} />
+            </div>
+            <label className="form-toggle" style={{ alignSelf: "end" }}>
+              <input type="checkbox" checked={calc.includeIva}
+                onChange={(e) => set("includeIva", e.target.checked)} />
+              Incluir IVA en precio final
+            </label>
+          </div>
+        </section>
+      </div>
+
+      <section className="calc-result">
+        <div className="calc-result-head">
+          <div>
+            <div className="calc-result-label">Precio sugerido de venta</div>
+            <div className="calc-result-price">{formatCLP(finalPrice)}</div>
+            {calc.includeIva && (
+              <div className="calc-result-sub">Neto: {formatCLP(priceBeforeIva)} · IVA: {formatCLP(priceBeforeIva * ivaPct / 100)}</div>
+            )}
+          </div>
+          <div className="calc-result-side">
+            <div>
+              <div className="calc-result-label">Costo total</div>
+              <div className="calc-result-cost">{formatCLP(totalCost)}</div>
+            </div>
+            <div>
+              <div className="calc-result-label">Utilidad</div>
+              <div className="calc-result-profit">{formatCLP(profit)}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="calc-breakdown">
+          <div className="calc-breakdown-title">Desglose de costos</div>
+          {rows.map((r) => (
+            <div key={r.label} className="calc-row">
+              <div className="calc-row-label">
+                {r.label}
+                {r.hint && <span className="calc-row-hint">{r.hint}</span>}
+              </div>
+              <div className="calc-row-value">{formatCLP(r.value)}</div>
+            </div>
+          ))}
+          <div className="calc-row calc-row--sub">
+            <div className="calc-row-label">Subtotal</div>
+            <div className="calc-row-value">{formatCLP(baseCost)}</div>
+          </div>
+          <div className="calc-row">
+            <div className="calc-row-label">
+              Ajuste por fallas
+              <span className="calc-row-hint">+{failurePct}%</span>
+            </div>
+            <div className="calc-row-value">{formatCLP(failureAdjusted - baseCost)}</div>
+          </div>
+          <div className="calc-row calc-row--total">
+            <div className="calc-row-label">Costo total</div>
+            <div className="calc-row-value">{formatCLP(totalCost)}</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// ===== App =====
+function App() {
+  const [inventory, setInventory] = useLocal(STORAGE_KEY, {});
+  const [tweaks, setTweaks]       = useLocal(TWEAKS_KEY, TWEAK_DEFAULTS);
+  const [customs, setCustoms]     = useLocal(CUSTOMS_KEY, { items: [] });
+  const [spoolsState, setSpoolsState] = useLocal(SPOOLS_KEY, { items: [] });
+  const [calc, setCalc] = useLocal(CALC_KEY, CALC_DEFAULTS);
+  const [selectedId, setSelectedId] = useState(null);
+  const [query, setQuery] = useState("");
+  const [activeFamily, setActiveFamily] = useState("Todos");
+  const [ownedOnly, setOwnedOnly] = useState(true);
+  const [showAdd, setShowAdd] = useState(false);
+  const [view, setView] = useState("catalog"); // "catalog" | "spools" | "calculator"
+  const [showNewSpool, setShowNewSpool] = useState(false);
+  const [newSpoolFilamentId, setNewSpoolFilamentId] = useState("");
+
+  const spools = spoolsState.items || [];
+
+  const addSpool = useCallback((spool) => {
+    setSpoolsState((prev) => ({ ...prev, items: [...(prev.items || []), spool] }));
+  }, []);
+  const addSpoolEntry = useCallback((spoolId, entry) => {
+    setSpoolsState((prev) => ({
+      ...prev,
+      items: (prev.items || []).map((s) => s.id === spoolId ? { ...s, entries: [...(s.entries || []), entry] } : s),
+    }));
+  }, []);
+  const removeSpoolEntry = useCallback((spoolId, entryId) => {
+    setSpoolsState((prev) => ({
+      ...prev,
+      items: (prev.items || []).map((s) => s.id === spoolId ? { ...s, entries: (s.entries || []).filter((e) => e.id !== entryId) } : s),
+    }));
+  }, []);
+  const deleteSpool = useCallback((spoolId) => {
+    if (!window.confirm("¿Eliminar este carrete y todos sus registros?")) return;
+    setSpoolsState((prev) => ({ ...prev, items: (prev.items || []).filter((s) => s.id !== spoolId) }));
+  }, []);
+
+  const data = useMemo(
+    () => [...window.FILAMENT_DATA, ...(customs.items || [])],
+    [customs.items]
+  );
+
+  const addCustom = useCallback((item) => {
+    setCustoms((prev) => ({ ...prev, items: [...(prev.items || []), item] }));
+  }, []);
+  const deleteCustom = useCallback((id) => {
+    setCustoms((prev) => ({ ...prev, items: (prev.items || []).filter((x) => x.id !== id) }));
+    setInventory((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+    setSelectedId(null);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", tweaks.theme || "light");
+  }, [tweaks.theme]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty("--swatch-size", `${tweaks.swatchSize || 64}px`);
+    const gap = tweaks.density === "tight" ? 6 : tweaks.density === "roomy" ? 16 : 10;
+    root.style.setProperty("--swatch-gap", `${gap}px`);
+  }, [tweaks.swatchSize, tweaks.density]);
+
+  const families = useMemo(() => {
+    const map = new Map();
+    for (const f of data) {
+      if (!map.has(f.family)) map.set(f.family, 0);
+      map.set(f.family, map.get(f.family) + 1);
+    }
+    return Array.from(map.entries()).map(([name, count]) => ({ name, count }));
+  }, [data]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return data.filter((f) => {
+      if (activeFamily !== "Todos" && f.family !== activeFamily) return false;
+      if (ownedOnly && !(inventory[f.id]?.owned)) return false;
+      if (q) {
+        const hay = `${f.family} ${f.line} ${f.name} ${f.color} ${f.code || ""}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [data, query, activeFamily, ownedOnly, inventory]);
+
+  const grouped = useMemo(() => {
+    const byFamily = new Map();
+    for (const f of filtered) {
+      if (!byFamily.has(f.family)) byFamily.set(f.family, new Map());
+      const lines = byFamily.get(f.family);
+      if (!lines.has(f.line)) lines.set(f.line, []);
+      lines.get(f.line).push(f);
+    }
+    return byFamily;
+  }, [filtered]);
+
+  const stats = useMemo(() => {
+    let ownedTypes = 0, rolls = 0, invested = 0;
+    for (const f of data) {
+      const inv = inventory[f.id];
+      if (inv?.owned || (inv?.quantity || 0) > 0) ownedTypes += 1;
+      if (inv?.quantity) rolls += inv.quantity;
+      if (inv?.quantity) invested += (inv.customPrice != null ? inv.customPrice : f.priceCLP) * inv.quantity;
+    }
+    return { ownedTypes, rolls, invested, total: data.length };
+  }, [data, inventory]);
+
+  const updateInventory = useCallback((id, patch) => {
+    setInventory((prev) => ({ ...prev, [id]: { ...(prev[id] || {}), ...patch } }));
+  }, []);
+
+  const selected = selectedId ? data.find((f) => f.id === selectedId) : null;
+
+  return (
+    <div className={`app ${selected ? "app--detail-open" : ""}`}>
+      <aside className="sidebar">
+        <div className="brand">
+          <div className="brand-mark" />
+          <div className="brand-name">
+            Filamentos
+            <span>Inventario 3D</span>
+          </div>
+        </div>
+
+        <div className="nav-section">Vistas</div>
+        <button
+          className={`nav-item ${view === "catalog" ? "nav-item--active" : ""}`}
+          onClick={() => setView("catalog")}
+        >
+          <span><Icon.Grid /> &nbsp;Catálogo</span>
+        </button>
+        <button
+          className={`nav-item ${view === "spools" ? "nav-item--active" : ""}`}
+          onClick={() => setView("spools")}
+        >
+          <span><Icon.Spool /> &nbsp;Carretes</span>
+          <span className="nav-count">{spools.length}</span>
+        </button>
+        <button
+          className={`nav-item ${view === "calculator" ? "nav-item--active" : ""}`}
+          onClick={() => setView("calculator")}
+        >
+          <span><Icon.Sliders /> &nbsp;Calculadora</span>
+        </button>
+
+        <div className="nav-section">Familias</div>
+        <button
+          className={`nav-item ${view === "catalog" && activeFamily === "Todos" ? "nav-item--active" : ""}`}
+          onClick={() => { setView("catalog"); setActiveFamily("Todos"); }}
+        >
+          <span>Todos</span>
+          <span className="nav-count">{data.length}</span>
+        </button>
+        {families.map((f) => (
+          <button
+            key={f.name}
+            className={`nav-item ${view === "catalog" && activeFamily === f.name ? "nav-item--active" : ""}`}
+            onClick={() => { setView("catalog"); setActiveFamily(f.name); }}
+          >
+            <span>{f.name}</span>
+            <span className="nav-count">{f.count}</span>
+          </button>
+        ))}
+
+        <div className="sidebar-stats">
+          <div className="stat">
+            <div className="stat-label">En mi inventario</div>
+            <div className="stat-value">{stats.ownedTypes}<span style={{color:"var(--muted)",fontWeight:400,fontSize:13}}> / {stats.total}</span></div>
+            <div className="stat-sub">tipos distintos</div>
+          </div>
+          <div className="stat">
+            <div className="stat-label">Rollos totales</div>
+            <div className="stat-value">{stats.rolls}</div>
+          </div>
+          <div className="stat">
+            <div className="stat-label">Invertido</div>
+            <div className="stat-value" style={{fontSize:16}}>{formatCLP(stats.invested)}</div>
+          </div>
+        </div>
+      </aside>
+
+      <main className="main">
+        <div className="main-head">
+          <div>
+            <h1 className="main-title">
+              {view === "spools"
+                ? "Carretes"
+                : view === "calculator"
+                  ? "Calculadora de costo y precio"
+                  : (activeFamily === "Todos" ? "Catálogo completo" : activeFamily)}
+            </h1>
+            <div className="main-sub">
+              {view === "spools"
+                ? `${spools.length} carrete${spools.length === 1 ? "" : "s"} registrado${spools.length === 1 ? "" : "s"}`
+                : view === "calculator"
+                  ? "Estima el costo real de impresión y un precio sugerido de venta."
+                  : (<>{filtered.length} filamento{filtered.length === 1 ? "" : "s"}{ownedOnly ? " · solo los que tengo" : ""}{query ? ` · "${query}"` : ""}</>)}
+            </div>
+          </div>
+        </div>
+
+        {view !== "calculator" && (
+        <div className="toolbar">
+          {view === "catalog" ? (
+            <>
+              <div className="search">
+                <span className="search-icon"><Icon.Search /></span>
+                <input
+                  type="text"
+                  placeholder="Buscar por nombre, tipo o color…"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+                {query && (
+                  <button className="search-clear" onClick={() => setQuery("")} aria-label="Limpiar">
+                    <Icon.X />
+                  </button>
+                )}
+              </div>
+              <button
+                className={`chip ${ownedOnly ? "chip--active" : ""}`}
+                onClick={() => setOwnedOnly((v) => !v)}
+              >
+                <Icon.Check /> Solo los que tengo
+              </button>
+              <button className="chip" onClick={() => setShowAdd(true)} title="Agregar color personalizado">
+                <Icon.Plus /> Agregar color
+              </button>
+            </>
+          ) : (
+            <button className="chip chip--active" onClick={() => { setNewSpoolFilamentId(""); setShowNewSpool(true); }}>
+              <Icon.Plus /> Nuevo carrete
+            </button>
+          )}
+          <div className="toolbar-sep" />
+          <button
+            className={`chip ${tweaks.showTweaks ? "chip--active" : ""}`}
+            onClick={() => setTweaks((t) => ({ ...t, showTweaks: !t.showTweaks }))}
+            title="Alternar panel de ajustes visuales"
+          >
+            <Icon.Sliders /> Tweaks
+          </button>
+        </div>
+        )}
+
+        {view === "calculator" ? (
+          <CalculatorView calc={calc} setCalc={setCalc} data={data} inventory={inventory} />
+        ) : view === "spools" ? (
+          <SpoolsView
+            spools={spools}
+            data={data}
+            onAddEntry={addSpoolEntry}
+            onRemoveEntry={removeSpoolEntry}
+            onDelete={deleteSpool}
+            onNew={() => { setNewSpoolFilamentId(""); setShowNewSpool(true); }}
+          />
+        ) : filtered.length === 0 ? (
+          <div className="empty">
+            <div className="empty-title">Sin resultados</div>
+            <div>Probá con otro término o quita los filtros.</div>
+          </div>
+        ) : (
+          Array.from(grouped.entries()).map(([familyName, lines]) => (
+            <section key={familyName} className="family-section">
+              <div className="family-head">
+                <div className="family-title">
+                  <h2>{familyName}</h2>
+                  <span className="family-title-count">
+                    {Array.from(lines.values()).reduce((s, a) => s + a.length, 0)}
+                  </span>
+                </div>
+              </div>
+
+              {Array.from(lines.entries()).map(([lineName, items]) => (
+                <div key={lineName} className="line-group">
+                  <div className="line-head">{lineName}</div>
+                  <div className="swatch-grid">
+                    {items.map((item) => {
+                      const inv = inventory[item.id];
+                      return (
+                        <Swatch
+                          key={item.id}
+                          item={item}
+                          size={tweaks.swatchSize || 64}
+                          shape={tweaks.swatchShape || "rounded"}
+                          owned={!!inv?.owned || (inv?.quantity || 0) > 0}
+                          selected={selectedId === item.id}
+                          onClick={() => setSelectedId(item.id)}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </section>
+          ))
+        )}
+      </main>
+
+      {selected && (
+        <DetailPanel
+          item={selected}
+          inventory={inventory}
+          onUpdate={updateInventory}
+          onDelete={deleteCustom}
+          onClose={() => setSelectedId(null)}
+          spools={spools}
+          onCreateSpool={(fid) => { setNewSpoolFilamentId(fid); setShowNewSpool(true); }}
+          onOpenSpools={() => setView("spools")}
+        />
+      )}
+
+      {tweaks.showTweaks && (
+        <TweaksPanel tweaks={tweaks} setTweaks={setTweaks} />
+      )}
+
+      {showAdd && (
+        <AddFilamentModal
+          existingFamilies={families}
+          existingCodes={new Set(data.filter((f) => f.code).map((f) => f.code))}
+          onAdd={addCustom}
+          onClose={() => setShowAdd(false)}
+        />
+      )}
+
+      {showNewSpool && (
+        <NewSpoolModal
+          data={data}
+          initialFilamentId={newSpoolFilamentId}
+          onCreate={addSpool}
+          onClose={() => setShowNewSpool(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
